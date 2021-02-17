@@ -1,33 +1,36 @@
-import React, { useState } from "react";
-import "components/Application.scss";
+import React, { Fragment, useState, useEffect } from "react";
+import axios from "axios";
 import DayList from "components/DayList";
+import Appointment from "components/Appointment/index";
+import { getAppointmentsForDay } from "helpers/selectors";
+import "components/Application.scss";
 
+export default function Application() {
 
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
+  const [state, setState] = useState({
+    day: "Monday",
+    days: [],
+    appointments:{},
+    interviewers: {}
+  });
 
-export default function Application(props) {
-  const [day, setDay] = useState("Monday");
+  const setDay = day => setState({ ...state, day });
+  
+  useEffect(() => {
+    Promise.all([
+      axios.get('/api/days'),
+      axios.get('/api/appointments'),
+      axios.get('/api/interviewers')
+    ]).then(all => {
+      setState(prev => ({ ...prev, days: all[0].data, appointments: all[1].data, interviewers:all[2].data}));
+    });
+  }, []);
+
+  const dailyAppointments = getAppointmentsForDay(state, state.day);  
 
   return (
     <main className="layout">
       <section className="sidebar">
-        {/* Replace this with the sidebar elements during the "Project Setup & Familiarity" activity. */}
         <img
           className="sidebar--centered"
           src="images/logo.png"
@@ -36,8 +39,8 @@ export default function Application(props) {
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
           <DayList
-            days={days}
-            day={day}
+            days={state.days}
+            day={state.day}
             setDay={setDay}
           />
         </nav>
@@ -48,7 +51,10 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        <Fragment>
+          {dailyAppointments.map((dailyAppointment) => <Appointment key={dailyAppointment.id} {...dailyAppointment}/>)}
+          <Appointment key="last" time="5pm" />
+        </Fragment>
       </section>
 
     </main>
