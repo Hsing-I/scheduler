@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import DayList from "components/DayList";
 import Appointment from "components/Appointment/index";
-import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
 import "components/Application.scss";
 
 export default function Application() {
@@ -27,13 +27,37 @@ export default function Application() {
   }, []);
 
   const appointments = getAppointmentsForDay(state, state.day);
-  const interviewersArr = Object.values(state.interviewers);
+  const interviewers = getInterviewersForDay(state, state.day);
+
+  function bookInterview(id, interview) {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    return axios.put(`/api/appointments/${id}`, { interview }).then(
+      setState({
+        ...state,
+        appointments
+      })
+    );
+  }
+
+  function cancelAppointment(id) {
+    state.appointments[id].interview = null
+  }
+
 
   const schedule = appointments.map((appointment) => {
     let interview = getInterview(state, appointment.interview);
-    return <Appointment key={appointment.id} id={appointment.id} time={appointment.time} interview={interview} interviewers={interviewersArr}/>
+    return <Appointment key={appointment.id} id={appointment.id} time={appointment.time} interview={interview} interviewers={interviewers} bookInterview={bookInterview} cancelAppointment={cancelAppointment}/>;
   });
-  
+
   return (
     <main className="layout">
       <section className="sidebar">
