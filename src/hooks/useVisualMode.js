@@ -6,14 +6,18 @@ export default function useVisualMode(initial) {
   const [history, setHistory] = useState([initial]);
 
   function transition(newMode, replace = false) {
-    if(replace) setHistory(prev => [...prev.slice(0, history.length-1)]);
-    setHistory(prev => [...prev, newMode]);
+    if (replace) setHistory(prev => ([...prev.slice(0, -1)]));
+    setHistory(prev => ([...prev, newMode]));
+    console.log("last line transition", newMode, history);
   };
 
   function back() {
-    if(history.length < 2) return;
-    setHistory(prev => [...prev.slice(0, history.length-1)]);
+    console.log("back", history);
+    if (history.length < 2) return;
+    setHistory(prev => [...prev.slice(0, -1)]);
+    console.log("last line back", history);
   };
 
-  return{ mode: history[history.length-1], transition, back };
+  console.log("history", history);
+  return { mode: history[history.length - 1], transition, back };
 };

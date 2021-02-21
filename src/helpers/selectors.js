@@ -31,3 +31,15 @@ export function getInterviewersForDay(state, day) {
   });
   return results;
 }
+
+/*export function getRemainingSpotsForDay(state, id){
+  const spots = 0;
+  state.days.forEach(d => {
+    if (d.name === day) {
+      d.interviewers.forEach(interviewer => {
+        results.push(state.interviewers[interviewer]);
+      });
+    }
+  });
+  return results;
+}*/
