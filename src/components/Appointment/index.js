@@ -26,20 +26,20 @@ export default function Appointment(props) {
   );
 
   function save(name, interviewer) {
+    console.log("indside save function", name, interviewer);
     const interview = {
       student: name,
       interviewer
     };
 
-    name && interviewer && transition(SAVE);
-    
+    transition(SAVE);
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
-      .catch(error => transition(ERROR_SAVE), true);
+      .catch(error => transition(ERROR_SAVE, true));
   }
 
   function cancel() {
-    transition(DELETE);
+    transition(DELETE, true);
     props.cancelAppointment(props.id)
       .then(() => transition(EMPTY))
       .catch(error => transition(ERROR_DELETE, true));
@@ -57,8 +57,8 @@ export default function Appointment(props) {
           onEdit={() => transition(EDIT)}
         />
       )}
-      {mode === CREATE && <Form interviewers={props.interviewers} onCancel={() => back()} save={save} />}
-      {mode === EDIT && <Form name={props.interview.student} interviewers={props.interviewers} interviewer={props.interview.interviewer.id} save={save} onCancel={() => back(SHOW)} />}
+      {mode === CREATE && <Form interviewers={props.interviewers} onCancel={() => back()} onSave={save} />}
+      {mode === EDIT && <Form name={props.interview.student} interviewers={props.interviewers} interviewer={props.interview.interviewer.id} onSave={save} onCancel={() => back(SHOW)} />}
       {mode === SAVE && <Status message="Saving" />}
       {mode === CONFIRM && <Confirm message="Are you sure you would like to delete?" onCancel={() => back()} onConfirm={cancel} />}
       {mode === DELETE && <Status message="Deleting" />}

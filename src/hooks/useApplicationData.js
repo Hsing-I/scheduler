@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { getRemainingSpotsForDay } from "helpers/selectors";
 
 export default function useApplicationData() {
 
@@ -33,12 +34,14 @@ export default function useApplicationData() {
       [id]: appointment
     };
 
-    return axios.put(`/api/appointments/${id}`, { interview }).then(
+    return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
+      const days = getRemainingSpotsForDay({ ...state, appointments }, id);
       setState({
         ...state,
-        appointments
-      })
-    );
+        appointments,
+        days
+      });
+    });
   }
 
   function cancelAppointment(id) {
@@ -52,18 +55,20 @@ export default function useApplicationData() {
       [id]: appointment
     };
 
-    return axios.delete(`/api/appointments/${id}`, { appointment }).then(
+    return axios.delete(`/api/appointments/${id}`, { appointment }).then(() => {
+      const days = getRemainingSpotsForDay({ ...state, appointments }, id);
       setState({
         ...state,
-        appointments
-      })
-    );
+        appointments,
+        days
+      });
+    });
   }
 
-  return{
+  return {
     state,
     setDay,
     bookInterview,
     cancelAppointment
-  }
+  };
 }
