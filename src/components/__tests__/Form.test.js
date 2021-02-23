@@ -1,5 +1,5 @@
 import React from "react";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, act } from "@testing-library/react";
 import Form from "components/Appointment/Form";
 import { fireEvent } from "@testing-library/react";
 
@@ -47,7 +47,6 @@ describe("Form", () => {
     );
 
     fireEvent.click(getByText("Save"));
-
     expect(getByText(/student name cannot be blank/i)).toBeInTheDocument();
     expect(onSave).not.toHaveBeenCalled();
 
@@ -56,9 +55,7 @@ describe("Form", () => {
     });
 
     fireEvent.click(getByText("Save"));
-
     expect(queryByText(/student name cannot be blank/i)).toBeNull();
-
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave).toHaveBeenCalledWith("Lydia Miller-Jones", null);
   });

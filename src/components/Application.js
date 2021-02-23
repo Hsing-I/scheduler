@@ -45,5 +45,4 @@ export default function Application() {
       </section>
     </main>
   );
-  //});
 }

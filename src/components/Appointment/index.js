@@ -26,7 +26,6 @@ export default function Appointment(props) {
   );
 
   function save(name, interviewer) {
-    console.log("indside save function", name, interviewer);
     const interview = {
       student: name,
       interviewer
@@ -46,7 +45,7 @@ export default function Appointment(props) {
   }
 
   return (
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && (
@@ -57,13 +56,13 @@ export default function Appointment(props) {
           onEdit={() => transition(EDIT)}
         />
       )}
-      {mode === CREATE && <Form interviewers={props.interviewers} onCancel={() => back()} onSave={save} />}
-      {mode === EDIT && <Form name={props.interview.student} interviewers={props.interviewers} interviewer={props.interview.interviewer.id} onSave={save} onCancel={() => back(SHOW)} />}
+      {mode === CREATE && <Form interviewers={props.interviewers} onCancel={back} onSave={save} />}
+      {mode === EDIT && <Form name={props.interview.student} interviewers={props.interviewers} interviewer={props.interview.interviewer.id} onSave={save} onCancel={back} />}
       {mode === SAVE && <Status message="Saving" />}
-      {mode === CONFIRM && <Confirm message="Are you sure you would like to delete?" onCancel={() => back()} onConfirm={cancel} />}
+      {mode === CONFIRM && <Confirm message="Are you sure you would like to delete?" onCancel={back} onConfirm={cancel} />}
       {mode === DELETE && <Status message="Deleting" />}
-      {mode === ERROR_SAVE && <Error message="Could not save appointment" onClose={() => back()} />}
-      {mode === ERROR_DELETE && <Error message="Could not cancel appointment" onClose={() => back()} />}
+      {mode === ERROR_SAVE && <Error message="Could not save appointment" onClose={back} />}
+      {mode === ERROR_DELETE && <Error message="Could not cancel appointment" onClose={back} />}
 
     </article>);
 }
