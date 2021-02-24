@@ -1,4 +1,11 @@
 # Interview Scheduler
+This is a React application that allows users to book, edit and cancel interviews. 
+
+## Final Project
+!["screenshot of appointment-form"]
+!["screenshot of appointment-edit"]
+!["screenshot of appointment-delete"]
+
 
 ## Setup
 
@@ -21,3 +28,4 @@ npm test
 ```sh
 npm run storybook
 ```
+
